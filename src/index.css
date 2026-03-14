@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-white antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(77, 171, 247, 0.3);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(77, 171, 247, 0.5);
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-glass backdrop-blur-md border border-white/10 rounded-2xl;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  .glow-border {
+    position: relative;
+  }
+  .glow-border::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(45deg, #FFD43B, #4DABF7);
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0.2;
+    filter: blur(4px);
+  }
+
+  .btn-primary {
+    @apply px-6 py-2 bg-energy-yellow text-background font-bold rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,212,59,0.3)];
+  }
+
+  .btn-secondary {
+    @apply px-6 py-2 bg-guild-blue/20 text-guild-blue font-semibold rounded-full border border-guild-blue/30 transition-all hover:bg-guild-blue/30 active:scale-95;
+  }
+}
