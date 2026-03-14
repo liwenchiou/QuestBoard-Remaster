@@ -64,7 +64,7 @@ export default function TodayMission({ tasks, checkIns, onGoToReport }: TodayMis
                     <div className="text-2xl md:text-4xl font-black text-energy-yellow">{uniqueUsers.toLocaleString()}</div>
                 </div>
                 <div className="glass-card p-4 md:p-6 flex flex-col items-center gap-1 md:gap-3 group hover:border-guild-blue/30 transition-all">
-                    <div className="text-white/40 uppercase text-[10px] md:text-[12px] tracking-widest font-bold">累計打卡次數</div>
+                    <div className="text-white/40 uppercase text-[10px] md:text-[12px] tracking-widest font-bold">任務打卡總數</div>
                     <div className="text-2xl md:text-4xl font-black text-guild-blue">{totalCheckIns.toLocaleString()}</div>
                 </div>
                 <div className="glass-card p-4 md:p-6 flex flex-col items-center gap-1 md:gap-3 group hover:border-white/30 transition-all">
