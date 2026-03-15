@@ -7,7 +7,7 @@ export const GUILD_TASKS: GuildTask[] = [
     title: "【序幕】寫程式不靠通靈！重塑 JS 腦袋",
     theme: "第一階段：啟航與代碼整潔術",
     link: "https://ithelp.ithome.com.tw/articles/10342935",
-    available: false,
+    available: true,
   },
   {
     id: 2,

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { GuildTask } from "../../types";
-import { Save, Lock, Unlock, ExternalLink, CheckCircle2, RotateCw } from "lucide-react";
+import { Save, Lock, Unlock, ExternalLink, RotateCw } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 
 interface AdminPanelProps {
@@ -135,7 +135,7 @@ export default function AdminPanel({ tasks, onRefresh }: AdminPanelProps) {
                         return (
                             <div key={task.id} className={`glass-card p-4 flex flex-col md:flex-row items-center gap-4 transition-all ${state.available ? "border-energy-yellow/20" : "opacity-80"
                                 } ${isModified ? "border-guild-blue/30 bg-guild-blue/5" : ""}`}>
-                                <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center font-mono font-black text-xl text-white/40 shrink-0">
+                                <div className={`w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center font-mono font-black text-xl shrink-0 ${state.available ? "text-energy-yellow" : "text-white/40"}`}>
                                     {task.day}
                                 </div>
 
@@ -165,33 +165,42 @@ export default function AdminPanel({ tasks, onRefresh }: AdminPanelProps) {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3 shrink-0">
+                                <div className="flex items-center gap-3 shrink-0 self-end mb-1">
                                     <button
                                         onClick={() => updateEditState(task.id, { available: !state.available })}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${state.available
-                                                ? "bg-energy-yellow/10 text-energy-yellow border border-energy-yellow/30"
-                                                : "bg-white/5 text-white/40 border border-white/10"
+                                        className={`flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all min-w-[100px] ${state.available
+                                            ? "bg-energy-yellow/10 text-energy-yellow border border-energy-yellow/30"
+                                            : "bg-white/5 text-white/40 border border-white/10"
                                             }`}
                                     >
                                         {state.available ? (
-                                            <>已解鎖 <Unlock size={14} /></>
+                                            <>
+                                                <Unlock size={14} />
+                                                <span>已解鎖</span>
+                                            </>
                                         ) : (
-                                            <>封鎖中 <Lock size={14} /></>
+                                            <>
+                                                <Lock size={14} />
+                                                <span>封鎖中</span>
+                                            </>
                                         )}
                                     </button>
 
                                     <button
                                         onClick={() => handleUpdateTask(task.id)}
                                         disabled={!isModified || isSaving === task.id}
-                                        className={`flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold transition-all ${isModified
-                                                ? "bg-guild-blue text-white shadow-lg shadow-guild-blue/20"
-                                                : "bg-white/5 text-white/20 cursor-not-allowed border border-white/5"
+                                        className={`flex items-center justify-center gap-2 px-6 py-2 rounded-xl text-xs font-bold transition-all ${isModified
+                                            ? "bg-guild-blue text-white shadow-lg shadow-guild-blue/20"
+                                            : "bg-white/5 text-white/20 cursor-not-allowed border border-white/5"
                                             }`}
                                     >
                                         {isSaving === task.id ? (
                                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                         ) : (
-                                            <><Save size={14} /> 更新資料</>
+                                            <>
+                                                <Save size={14} />
+                                                <span>更新資料</span>
+                                            </>
                                         )}
                                     </button>
                                 </div>

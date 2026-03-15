@@ -17,8 +17,11 @@ export default function Navbar({ currentMode, setMode }: NavbarProps) {
 
     return (
         <nav className="h-16 bg-surface border-b border-white/5 flex items-center px-4 md:px-8 justify-between z-50 relative shrink-0">
-            <div className="flex items-center gap-2 md:gap-3">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-energy-yellow rounded-lg flex items-center justify-center text-background font-black text-lg md:text-xl shadow-[0_0_15px_rgba(255,212,59,0.5)]">
+            <div 
+                className="flex items-center gap-2 md:gap-3 cursor-pointer group hover:opacity-80 transition-all active:scale-95"
+                onClick={() => setMode('home')}
+            >
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-energy-yellow rounded-lg flex items-center justify-center text-background font-black text-lg md:text-xl shadow-[0_0_15px_rgba(255,212,59,0.5)] group-hover:shadow-[0_0_20px_rgba(255,212,59,0.8)] transition-all">
                     R
                 </div>
                 <span className="font-bold text-base md:text-lg tracking-wider hidden sm:block">

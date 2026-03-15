@@ -54,7 +54,7 @@ export default function LibraryGrid({ tasks }: LibraryGridProps) {
                         )}
 
                         <div className="flex items-start justify-between">
-                            <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center font-mono font-black text-2xl text-white/20">
+                            <div className={`w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center font-mono font-black text-2xl ${task.available ? "text-energy-yellow" : "text-white/20"}`}>
                                 {task.day}
                             </div>
                             {task.available && (
