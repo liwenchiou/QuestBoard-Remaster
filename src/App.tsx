@@ -48,9 +48,13 @@ function App() {
 
       if (msgError) console.error('Error fetching messages:', msgError);
       else if (msgData) {
-        const mappedMsgs = msgData.map(m => ({
-          ...m,
-          time: new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+        const mappedMsgs: Message[] = msgData.map((m: Record<string, any>) => ({
+          id: m.id,
+          user: m.user_name || m.user || '匿名勇者',
+          avatar: m.avatar || 'Felix',
+          content: m.content || '',
+          time: new Date(m.created_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+          type: m.msg_type || m.type || 'user',
         }));
         setMessages(mappedMsgs);
       }
@@ -73,11 +77,15 @@ function App() {
     const messageChannel = supabase
       .channel('public:messages')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
-        const newMsg = payload.new;
+        const newMsg = payload.new as Record<string, any>;
         setMessages(prev => [...prev, {
-          ...newMsg,
-          time: new Date(newMsg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
-        } as Message]);
+          id: newMsg.id,
+          user: newMsg.user_name || newMsg.user || '匿名勇者',
+          avatar: newMsg.avatar || 'Felix',
+          content: newMsg.content || '',
+          time: new Date(newMsg.created_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+          type: newMsg.msg_type || newMsg.type || 'user',
+        }]);
       })
       .subscribe();
 
@@ -106,21 +114,21 @@ function App() {
 
     // Add a system message to tavern
     await supabase.from('messages').insert([{
-      user: 'System',
+      user_name: 'System',
       avatar: 'Felix',
       content: `${data.name} 完成了一個任務！`,
-      type: 'system'
+      msg_type: 'system'
     }]);
   };
 
-  const handleMessageSubmit = async (data: any) => {
+  const handleMessageSubmit = async (data: Omit<Message, "id" | "time">) => {
     const { error } = await supabase
       .from('messages')
       .insert([{
-        user: data.user,
+        user_name: data.user,
         avatar: data.avatar,
         content: data.content,
-        type: 'user'
+        msg_type: data.type
       }]);
 
     if (error) {
@@ -169,8 +177,8 @@ function App() {
             mode={mode}
             tasks={tasks}
             onSubmit={(data) => {
-              if (mode === 'bulletin') handleCheckInSubmit(data);
-              else handleMessageSubmit(data);
+              if (mode === 'bulletin') handleCheckInSubmit(data as Omit<CheckIn, "id">);
+              else handleMessageSubmit(data as Omit<Message, "id" | "time">);
               setIsSidebarOpen(false);
             }}
           />

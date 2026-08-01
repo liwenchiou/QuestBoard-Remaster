@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import type { AppMode, GuildTask } from "../../types";
+import type { AppMode, GuildTask, CheckIn, Message } from "../../types";
 import { Send, User, Link as LinkIcon, MessageSquare, Calendar } from "lucide-react";
+
+export type SidebarSubmitData = Omit<CheckIn, "id"> | Omit<Message, "id" | "time">;
 
 interface SidebarProps {
     mode: AppMode;
     tasks: GuildTask[];
-    onSubmit: (data: any) => void;
+    onSubmit: (data: SidebarSubmitData) => void;
 }
 
 const AVATAR_SEEDS = ['Felix', 'Aneka', 'Caleb', 'Jocelyn'];

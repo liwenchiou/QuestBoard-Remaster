@@ -15,6 +15,14 @@ interface EditState {
     available: boolean;
 }
 
+async function hashPassword(input: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(input);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export default function AdminPanel({ tasks, onRefresh }: AdminPanelProps) {
     const [isSaving, setIsSaving] = useState<number | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,9 +31,28 @@ export default function AdminPanel({ tasks, onRefresh }: AdminPanelProps) {
     // Local state for all rows being edited
     const [editStates, setEditStates] = useState<Record<number, EditState>>({});
 
-    const handleLogin = (e: React.FormEvent) => {
+    // [Security Awareness] 此處採用 SHA-256 雜湊比對防範明文露出，僅做 UI 門檻阻擋。
+    // 若須正式上線防範 API 越權寫入，建議於 Supabase 資料庫層開啟 RLS (Row Level Security)
+    // 或是搭配 Supabase Auth 設定管理員角色。
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (password === "guild-master-2026") {
+        if (!password) return;
+
+        const inputHash = await hashPassword(password);
+        const envHash = import.meta.env.VITE_ADMIN_PASSWORD_HASH;
+        const envPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+
+        let targetHash = envHash;
+        if (!targetHash && envPassword) {
+            targetHash = await hashPassword(envPassword);
+        }
+
+        // 預設 guild-master-2026 的 SHA-256 Hash，作為備用預設值
+        if (!targetHash) {
+            targetHash = "83138b185b306b3ca05553e1a0dfd12530184ce140e4f2081d4514a3821034f7";
+        }
+
+        if (inputHash === targetHash) {
             setIsAuthenticated(true);
         } else {
             alert("暗號錯誤！衛兵正在趕來的路上...");
