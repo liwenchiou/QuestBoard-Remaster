@@ -19,7 +19,8 @@ export default function Sidebar({ mode, tasks, onSubmit }: SidebarProps) {
 
     useEffect(() => {
         if (tasks.length > 0 && !selectedDay) {
-            setSelectedDay(tasks[0].day);
+            const firstAvailable = tasks.find(t => t.available) || tasks[0];
+            setSelectedDay(firstAvailable.day);
         }
     }, [tasks]);
     const [url, setUrl] = useState("");
@@ -105,8 +106,8 @@ export default function Sidebar({ mode, tasks, onSubmit }: SidebarProps) {
                                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-energy-yellow/50 transition-colors cursor-pointer appearance-none"
                             >
                                 {tasks.map(task => (
-                                    <option key={task.day} value={task.day} className="bg-surface" disabled={!task.available}>
-                                        Day {task.day}: {task.available ? `${task.title.substring(0, 15)}...` : " [ 封印中 ]"}
+                                    <option key={task.day} value={task.day} className="bg-surface">
+                                        Day {task.day}: {task.available ? `${task.title.substring(0, 15)}...` : (task.title ? `${task.title.substring(0, 15)}... [未解鎖]` : " [ 未解鎖 ]")}
                                     </option>
                                 ))}
                             </select>

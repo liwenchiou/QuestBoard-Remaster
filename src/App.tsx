@@ -20,10 +20,13 @@ function App() {
     const { data: taskData, error: taskError } = await supabase
       .from('guild_tasks')
       .select('*')
-      .order('id', { ascending: true });
+      .order('day', { ascending: true });
 
     if (taskError) console.error('Error fetching tasks:', taskError);
-    else if (taskData) setTasks(taskData as GuildTask[]);
+    else if (taskData) {
+      const sorted = (taskData as GuildTask[]).sort((a, b) => parseInt(a.day) - parseInt(b.day));
+      setTasks(sorted);
+    }
   }, []);
 
   // Load initial data and setup subscriptions
