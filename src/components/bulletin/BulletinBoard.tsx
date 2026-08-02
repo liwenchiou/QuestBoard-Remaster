@@ -17,11 +17,17 @@ export default function BulletinBoard({ checkIns, tasks }: BulletinBoardProps) {
 
     const filteredCheckIns = useMemo(() => {
         if (selectedDay === "all") return [...checkIns].reverse();
-        // Since task string in CheckIn includes "Day XX: ", we can check if it starts with it
+        const targetTask = tasks.find(t => t.day === selectedDay);
+        const paddedDay = selectedDay.padStart(2, '0');
         return [...checkIns]
-            .filter(ci => ci.task.includes(`Day ${selectedDay}`))
+            .filter(ci => {
+                if (ci.task.includes(`Day ${selectedDay}`)) return true;
+                if (ci.task.includes(`Day ${paddedDay}`)) return true;
+                if (targetTask && targetTask.title && ci.task.includes(targetTask.title)) return true;
+                return false;
+            })
             .reverse();
-    }, [checkIns, selectedDay]);
+    }, [checkIns, selectedDay, tasks]);
 
     const totalPages = Math.ceil(filteredCheckIns.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;

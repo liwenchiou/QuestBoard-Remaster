@@ -18,11 +18,16 @@ export default function Sidebar({ mode, tasks, onSubmit }: SidebarProps) {
     const [selectedDay, setSelectedDay] = useState("");
 
     useEffect(() => {
-        if (tasks.length > 0 && !selectedDay) {
-            const firstAvailable = tasks.find(t => t.available) || tasks[0];
-            setSelectedDay(firstAvailable.day);
+        if (tasks.length > 0) {
+            const currentTask = tasks.find(t => t.day === selectedDay);
+            if (!selectedDay || (currentTask && !currentTask.available)) {
+                const firstAvailable = tasks.find(t => t.available);
+                if (firstAvailable) {
+                    setSelectedDay(firstAvailable.day);
+                }
+            }
         }
-    }, [tasks]);
+    }, [tasks, selectedDay]);
     const [url, setUrl] = useState("");
     const [report, setReport] = useState("");
     const [message, setMessage] = useState("");
@@ -41,7 +46,7 @@ export default function Sidebar({ mode, tasks, onSubmit }: SidebarProps) {
                 avatar: selectedSeed,
                 url,
                 report,
-                task: `Day ${selectedDay}: ${taskObj?.title}`,
+                task: taskObj?.title || `Day ${selectedDay}`,
                 created_at: new Date().toISOString()
             });
         } else {
@@ -105,9 +110,13 @@ export default function Sidebar({ mode, tasks, onSubmit }: SidebarProps) {
                                 onChange={(e) => setSelectedDay(e.target.value)}
                                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-energy-yellow/50 transition-colors cursor-pointer appearance-none"
                             >
-                                {tasks.map(task => (
-                                    <option key={task.day} value={task.day} className="bg-surface">
-                                        Day {task.day}: {task.available ? `${task.title.substring(0, 15)}...` : (task.title ? `${task.title.substring(0, 15)}... [未解鎖]` : " [ 未解鎖 ]")}
+                                {tasks.filter(task => task.available).map(task => (
+                                    <option
+                                        key={task.day}
+                                        value={task.day}
+                                        className="bg-surface"
+                                    >
+                                        {task.title || `任務 ${task.day}`}
                                     </option>
                                 ))}
                             </select>
